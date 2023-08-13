@@ -1,0 +1,120 @@
+{
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:5040"
+  },
+
+  "Routes": [
+
+    {
+      "DownstreamPathTemplate": "/myHub/",
+      "DownstreamScheme": "wss",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5041
+        }
+      ],
+      "UpstreamPathTemplate": "/myHub/",
+      "QoSOptions": {
+        "TimeoutValue": 320000
+      },
+      "Priority": 50
+    },
+
+
+    //{
+    //  "DownstreamPathTemplate": "/{catchAll}",
+    //  "DownstreamScheme": "ws",
+    //  "DownstreamHostAndPorts": [
+    //    {
+    //      "Host": "localhost",
+    //      "Port": 5041
+    //    }
+    //  ],
+    //  "UpstreamPathTemplate": "/gateway/{catchAll}",
+    //  "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ]
+    //},
+
+
+    {
+      "UpstreamPathTemplate": "/gateway/login",
+      "UpstreamHttpMethod": [ "post" ],
+      "DownstreamPathTemplate": "/api/Auth/login",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5043
+        }
+      ]
+    },
+
+    {
+      "UpstreamPathTemplate": "/gateway/getWebApi1",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamPathTemplate": "/api/WebApi1Data/getWebApi1Data",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5041
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+
+      "RouteClaimsRequirement": {
+        "roles": "admin"
+      }
+
+
+    },
+
+    {
+      "UpstreamPathTemplate": "/gateway/postWebApi1",
+      "UpstreamHttpMethod": [ "Post" ],
+      "DownstreamPathTemplate": "/api/WebApi1Data/postWebApi1Data",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5041
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+
+    {
+      "UpstreamPathTemplate": "/gateway/getWebApi2",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamPathTemplate": "/api/WebApi2Data/getWebApi2Data",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5042
+        }
+      ]
+
+    },
+
+    {
+      "UpstreamPathTemplate": "/gateway/postWebApi2",
+      "UpstreamHttpMethod": [ "post" ],
+      "DownstreamPathTemplate": "/api/WebApi2Data/postWebApi2Data",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5042
+        }
+      ]
+    }
+
+  ]
+}

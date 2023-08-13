@@ -1,0 +1,45 @@
+﻿@page "/counter"
+@using Microsoft.AspNetCore.SignalR.Client;
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Counter</h1>
+
+<h1>message: @_message</h1>
+
+<p role="status">Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+@code {
+    private int currentCount = 0;
+    private HubConnection hubConnection;
+    private string _message = "";
+
+    private string myToken = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTUxMiIsInR5cCI6IkpXVCJ9.eyJmaXJzdE5hbWUiOiJudXJsYW4iLCJsYXN0TmFtZSI6IkIiLCJyb2xlcyI6ImFkbWluIiwibmJmIjoxNjkxOTQ0NDI4LCJleHAiOjE2OTE5ODA0MjgsImlzcyI6ImJhYmFubGluYTg1QGdtYWlsLmNvbSIsImF1ZCI6InNvY2FyLmF6In0.JUFdYqblYrbXzkAf5BnPiu71GLl2LWimQIO6jVWsqXh47ze-NZUdo2PbAJi3UAbe1yqgwzo-AfTdvRMdwJId3g";
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder()
+           .WithUrl("https://localhost:5040/myHub", opt =>
+           {
+               opt.SkipNegotiation = true;
+               opt.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets;
+               opt.AccessTokenProvider = () => Task.FromResult(myToken);
+
+           }).WithAutomaticReconnect()
+           .Build();
+
+        hubConnection.On<string>("GetMessageFromFub", message =>
+     {
+         _message = message;
+         StateHasChanged();
+     });
+
+     await hubConnection.StartAsync();
+    }
+}
